@@ -1,4 +1,6 @@
-import mongoose from "mongoose";
+// import mongoose from "mongoose";
+import mongoose, { Schema, model, models } from "mongoose";
+
 
 const courseSchema = new mongoose.Schema({
     title:{
@@ -16,6 +18,11 @@ const courseSchema = new mongoose.Schema({
     coursePrice:{
          type:Number,
          required:true,
+    },
+    level:{
+            type:String,
+            enum:["Beginner","Intermediate","Advanced"],
+            default:"Beginner"
     },
     enrolledStudents:[
         {
@@ -41,4 +48,17 @@ const courseSchema = new mongoose.Schema({
 },{timestamps:true}
 )
 
-export const CourseModel = mongoose.model("Course",courseSchema);
+// export const CourseModel = mongoose.model("Course",courseSchema);
+
+// import mongoose, { Schema, model, models } from "mongoose";
+
+// const courseSchema = new Schema({
+//   title: String,
+//   description: String,
+//   category: String,
+//   coursePrice: Number,
+//   creator: String,
+//   isPublished: Boolean,
+// });
+
+export const CourseModel = models.Course || model("Course", courseSchema);
