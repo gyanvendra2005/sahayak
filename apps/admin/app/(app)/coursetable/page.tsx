@@ -64,7 +64,7 @@ const Page = () => {
     <div className="p-4 sm:p-10 max-w-6xl mt-20 mx-auto w-full">
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-2xl font-bold text-foreground">Your Courses</h1>
-        <Link href="/createcourse">
+        <Link href="createcourse">
           <Button>Add New Course</Button>
         </Link>
       </div>

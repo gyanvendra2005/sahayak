@@ -1,13 +1,41 @@
 "use client";
 
 
+import axios from "axios";
 import CourseCard from "../../components/CourseCard";
 import bg from "../../public/bg.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+
+type Course = {
+  _id: string;
+  // Add other properties as needed, e.g. title: string;
+  [key: string]: any;
+};
 
 export default function Home() {
 
   const [totalCourses, setTotalCourses] = useState(5);
+  const [courses, setCourses] = useState<Course[]>([]);
+    const fetchCourses = async () => {
+    // Simulate fetching courses from an API
+    const response = await axios.get('/api/getcourses');
+     console.log("Response from API:", response.data.data);
+     
+    if (response.data.success) {
+      setTotalCourses(response.data.data.length);
+      setCourses(response.data.data);
+    } else {
+      console.error("Failed to fetch courses:", response.data.message);
+    }
+  }
+
+ useEffect(() => {
+    fetchCourses();
+   
+ }, []);
+
+
+
 
   return (
     <>
@@ -76,8 +104,11 @@ export default function Home() {
   {/* Course Cards */}
   <div className="grid gap-6 sm:grid-cols-3 lg:grid-cols-3">
     {
-      Array.from({ length: totalCourses }).map((_, index) => (
-        <CourseCard key={index} />
+      // Array.from({ length: totalCourses }).map((_, index) => (
+      //   <CourseCard key={index} />
+      // ))
+      courses.map((course) => (
+        <CourseCard key={course._id} course={course} />
       ))
     }
     {/* Add more <CourseCard /> as needed */}

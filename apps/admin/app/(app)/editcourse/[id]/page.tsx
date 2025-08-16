@@ -69,7 +69,7 @@ const EditCoursePage = () => {
       });
       if (response.status === 200) {
         toast.success("Course updated successfully!");
-        router.push("/dashboard");
+        router.push("/coursetable"); // Redirect to course table after successful update
       } else {
         toast.error("Failed to update course");
       }

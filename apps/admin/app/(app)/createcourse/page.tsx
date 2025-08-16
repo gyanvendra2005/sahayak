@@ -41,18 +41,17 @@ export default function AddCourseForm() {
         // const formData = new FormData(e.target as HTMLFormElement);
         console.log(level, category, title, price, description);
         const userId = session?.user?.id;
-        const response  = axios.post("/api/createcourse", {
+        if(session?.user.role !== "user") {
+          const response  = axios.post("/api/createcourse", {
           title: title,
           description: description,
           category: category,
           level: level,
-           coursePrice: price,
-          creator: userId, // Use the session user ID as the creator
-          
-          // creator: "admin", // Assuming the creator is hardcoded for now
-          isPublished: false, // Assuming the course is not published initially
+          coursePrice: price,
+          creator: userId,
+          isPublished: false, 
         })
-                
+        // Handle the response   
         if((await response).status === 200) {
           toast.success("Course created successfully!");
           router.push("/coursetable"); // Redirect to course table after successful creation
@@ -60,14 +59,13 @@ export default function AddCourseForm() {
         else {
           toast.error("Failed to create course. Please try again.");
         }
-        
-       } catch (error) {
+      }}
+         catch (error) {
         console.error("Error submitting form:", error);
         toast.error("Failed to create course. Please try again.");
         
        }
   }
-
 
   return (
     <div className="flex-1 mx-6 md:mx-10 my-20">
@@ -169,4 +167,5 @@ export default function AddCourseForm() {
       </div>
     </div>
   );
-}
+  }
+

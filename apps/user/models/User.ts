@@ -14,11 +14,12 @@ const userSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
-    role:{
-        type: String,
-        enum: ['Student', 'Instructor'],
-        default: 'Student',
-    },
+    role: {
+  type: String,
+  enum: ['user', 'instructor'],
+  default: 'user',  
+},
+
     enrolledCourses:[
         {
             type: Schema.Types.ObjectId,

@@ -6,8 +6,8 @@ import { Skeleton } from '../../../components/ui/skeleton'
 
 const Page = () => {
   const [isLoading, setIsLoading] = useState(false)
-  const [noCourses, setNoCourses] = useState(3) // Replace with array of real course data later
-
+  const [noCourses, setNoCourses] = useState(0) // Replace with array of real course data later
+  const [courses, setCourses] = useState([]) // Replace with real course data
   return (
     <main className="min-h-screen bg-gray-100 dark:bg-gray-950 px-4 sm:px-6 md:px-10 py-20">
       <div className="max-w-6xl mx-auto">
@@ -37,7 +37,7 @@ const Page = () => {
           // Course Cards Grid
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
             {[...Array(noCourses)].map((_, i) => (
-              <CourseCard key={i} />
+              <CourseCard key={i} course={courses}/>
             ))}
           </div>
         )}

@@ -19,13 +19,14 @@ import { useRouter } from "next/navigation";
 export default function ProfilePage() {
   const { data: session, status,update } = useSession();
     const [open, setOpen] = useState(false);
-  const noCourses = 3;
+  const noCourses = 0;
     const [name, setName] = useState(session?.user.name);
   const [email, setEmail] = useState(session?.user.email);
   const [profileimage, setProfile] = useState("")
   console.log(name,email);
   console.log(session);
   const [IsLoading,setIsLoading] = useState(false);
+  const [course, setCourse] = useState([]);
   const router = useRouter();
   
 
@@ -141,7 +142,7 @@ if (status === "unauthenticated") {
             <span className="font-semibold">Email:</span> {session?.user.email ?? "gyan@example.com"}
           </div>
           <div className="text-lg text-gray-700 dark:text-gray-300">
-            <span className="font-semibold">Role:</span> Student
+            <span className="font-semibold">Role:</span> {session?.user.role === "Student" ? "Student" : "Instructor"}
           </div>
           <Button onClick={() => setOpen(true)} className="mt-3">Edit Profile</Button>
         </div>
@@ -211,7 +212,7 @@ if (status === "unauthenticated") {
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {[...Array(noCourses)].map((_, i) => (
-              <CourseCard key={i} />
+              <CourseCard key={i} course={course} />
             ))}
           </div>
         )}

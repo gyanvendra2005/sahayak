@@ -28,14 +28,16 @@ import { Loader2 } from "lucide-react";
 
 export default function AuthTabs() {
   const [loginInput, setLoginInput] = useState({ email: "", password: "" });
+   const [role, setRole] = useState<string | null>(null);
   const [signupInput, setSignupInput] = useState({
     name: "",
     email: "",
     password: "",
+    role: role || "user", 
   });
   const [issumitted, setIsSubmitted] = useState(false);
   const { data: session } = useSession();
-  const [role, setRole] = useState<string | null>(null);
+ 
 
   const router = useRouter();
 
@@ -182,8 +184,8 @@ export default function AuthTabs() {
                     // onChange={handleSignupChange} // optional handler
                   >
                     <option value="">-- Select Role --</option>
-                    <option value="student">Student</option>
-                    <option value="teacher">Teacher</option>
+                    <option value="user">Student</option>
+                    <option value="instructor">Teacher</option>
                     {/* <option value="admin">Admin</option> */}
                   </select>
                 </div>

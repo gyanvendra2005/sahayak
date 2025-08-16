@@ -29,7 +29,7 @@ export async function POST(request: Request) {
         name,
         email,
         password: hashedPassword,
-        role: role || 'user',
+        role
       });
 
       await newUser.save();
