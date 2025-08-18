@@ -1,9 +1,9 @@
 
-//  to fetch a single course by ID
 
 // import { CourseModel } from "models/Course";
+// import { NextRequest } from "next/server";
 
-// export async function GET(request: Request, { params }: { params: { id: string } }) {
+// export async function GET(request: NextRequest, { params }: { params: { id: string } }) {
 //   const { id } = params;
 
 //   try {
@@ -23,15 +23,14 @@
 // }
 
 
-// app/api/course/[id]/route.ts
 import { CourseModel } from "models/Course";
 import { NextRequest } from "next/server";
 
 export async function GET(
-  request: NextRequest,                  // 👈 first arg must be Request/NextRequest
-  context: { params: { id: string } }    // 👈 second arg holds params
+  request: NextRequest,
+  context: any   // 👈 avoid strict typing here
 ) {
-  const { id } = context.params; // ✅ Access from second arg
+  const { id } = context.params;
 
   try {
     const response = await CourseModel.findById(id);
