@@ -1,6 +1,6 @@
 import { LectureModel } from "models/Lecture";
 
-export async function GET(request: Request, { params }: { params: { id: string } }) {
+export async function GET(request: Request,  params: any ) {
   const { id } = params;
 
   try {
