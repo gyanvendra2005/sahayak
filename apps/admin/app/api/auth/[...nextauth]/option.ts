@@ -17,7 +17,7 @@ export const authOptions : NextAuthOptions = {
                 password: { label: "Password", type: "password" }
               },
               async authorize(credentials){
-                await dbconnect()
+                await dbconnect();
                 try {
                     if (!credentials) {
                         throw new Error('Credentials are not provided');
