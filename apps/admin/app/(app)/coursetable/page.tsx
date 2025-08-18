@@ -7,7 +7,6 @@ import {
   TableBody,
   TableCaption,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
@@ -42,7 +41,6 @@ const Page = () => {
         const userId = session.user.id;
         const response = await axios.get("/api/getcourse", {
           params: { userid: userId },
-          
         });
 
         if (response.status === 200) {
@@ -61,25 +59,39 @@ const Page = () => {
   }, [session]);
 
   return (
-    <div className="p-4 sm:p-10 max-w-6xl mt-20 mx-auto w-full">
+    <div className="p-4 sm:p-10 max-w-6xl mt-14 mx-auto w-full bg-white dark:bg-gray-900 rounded-xl shadow-sm">
+      {/* Header */}
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-foreground">Your Courses</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          Your Courses
+        </h1>
         <Link href="createcourse">
-          <Button>Add New Course</Button>
+          <Button className="bg-blue-600 hover:bg-blue-700 text-white">
+            Add New Course
+          </Button>
         </Link>
       </div>
 
-      <div className="overflow-x-auto rounded-xl ">
+      {/* Table */}
+      <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-700">
         <Table>
-          <TableCaption className="text-muted-foreground">
+          <TableCaption className="text-gray-600 dark:text-gray-400">
             A list of your created courses
           </TableCaption>
           <TableHeader>
-            <TableRow>
-              <TableHead className="">Title</TableHead>
-              <TableHead>Price</TableHead>
-              <TableHead>Status</TableHead>
-              <TableHead className="text-right">Action</TableHead>
+            <TableRow className="bg-gray-100 dark:bg-gray-800">
+              <TableHead className="text-gray-700 dark:text-gray-200">
+                Title
+              </TableHead>
+              <TableHead className="text-gray-700 dark:text-gray-200">
+                Price
+              </TableHead>
+              <TableHead className="text-gray-700 dark:text-gray-200">
+                Status
+              </TableHead>
+              <TableHead className="text-right text-gray-700 dark:text-gray-200">
+                Action
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -101,9 +113,14 @@ const Page = () => {
                   </TableRow>
                 ))
               : invoices.map((invoice) => (
-                  <TableRow key={invoice._id}>
-                    <TableCell>{invoice.title}</TableCell>
-                    <TableCell className="font-medium">
+                  <TableRow
+                    key={invoice._id}
+                    className="hover:bg-gray-50 dark:hover:bg-gray-800 transition"
+                  >
+                    <TableCell className="text-gray-900 dark:text-gray-100">
+                      {invoice.title}
+                    </TableCell>
+                    <TableCell className="font-medium text-gray-700 dark:text-gray-300">
                       ₹{invoice.coursePrice}
                     </TableCell>
                     <TableCell>
@@ -118,27 +135,25 @@ const Page = () => {
                         {invoice.isPublished ? "Published" : "Draft"}
                       </Badge>
                     </TableCell>
-                    
+
                     <TableCell className="text-right">
-                      <Button variant="outline" size="icon" onClick={() => router.push(`/editcourse/${invoice._id}`)}>
+                      <Button
+                        variant="outline"
+                        size="icon"
+                        onClick={() =>
+                          router.push(`/editcourse/${invoice._id}`)
+                        }
+                        className="border-gray-300 dark:border-gray-600 text-gray-800 dark:text-gray-200"
+                      >
                         <Edit className="h-4 w-4" />
                       </Button>
                     </TableCell>
                   </TableRow>
                 ))}
           </TableBody>
-          {/* {!loading && invoices.length > 0 && (
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={3}>Total</TableCell>
-                <TableCell className="text-right">₹2,500.00</TableCell>
-              </TableRow>
-            </TableFooter>
-          )} */}
         </Table>
       </div>
     </div>
-    
   );
 };
 

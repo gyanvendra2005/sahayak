@@ -6,6 +6,7 @@ import AuthProvider from "../context/AuthProvider";
 import Navbar from "../components/navbar";
 import { Toaster } from "sonner";
 import Sidebar from "../components/sidebar";
+import { ThemeProvider } from "components/theme-provider";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,6 +35,12 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         {/* <div> */}
+           <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
           <Navbar/>
          <div className="flex">
            <Sidebar/>
@@ -41,6 +48,7 @@ export default function RootLayout({
          </div>
         {/* </div> */}
         <Toaster/>
+        </ThemeProvider>
       </body>
       </AuthProvider>
     </html>

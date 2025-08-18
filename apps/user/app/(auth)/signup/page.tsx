@@ -184,7 +184,7 @@ export default function AuthTabs() {
                     // onChange={handleSignupChange} // optional handler
                   >
                     <option value="">-- Select Role --</option>
-                    <option value="user">Student</option>
+                    <option value="student">Student</option>
                     <option value="instructor">Teacher</option>
                     {/* <option value="admin">Admin</option> */}
                   </select>

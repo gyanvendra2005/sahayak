@@ -58,9 +58,9 @@ export default function Navbar() {
                   <Link href="/profile">
                     <DropdownMenuItem>Profile</DropdownMenuItem>
                   </Link>
-                  <Link href="/mylearning">
+                  {/* <Link href="/mylearning">
                     <DropdownMenuItem>My Courses</DropdownMenuItem>
-                  </Link>
+                  </Link> */}
                   <DropdownMenuItem>Settings</DropdownMenuItem>
                 </DropdownMenuGroup>
                 <DropdownMenuSeparator />

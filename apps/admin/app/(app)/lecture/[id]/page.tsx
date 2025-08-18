@@ -5,7 +5,6 @@ import { Label } from "@/components/ui/label";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { Switch } from "@/components/ui/switch";
-import Link from "next/link";
 import { Table, TableBody, TableCaption, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
@@ -93,30 +92,31 @@ export default function LecturePage() {
   }, [session, id]);
 
   return (
-    <div className="flex flex-col w-full gap-10 p-6 mt-20 md:p-10">
+    <div className="flex flex-col w-full gap-10 p-6 mt-20 md:p-10 bg-white dark:bg-gray-950 min-h-screen">
       {/* Header */}
       <div>
-        <h1 className="font-bold text-2xl">Add a New Lecture</h1>
-        <p className="text-sm text-muted-foreground mt-2">
+        <h1 className="font-bold text-2xl text-gray-900 dark:text-white">Add a New Lecture</h1>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
           Provide basic information about your lecture.
         </p>
       </div>
 
       {/* Form */}
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl">
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-2xl bg-gray-50 dark:bg-gray-900 p-6 rounded-xl border border-gray-200 dark:border-gray-800">
         <div className="flex flex-col space-y-1">
-          <Label htmlFor="title">Lecture Title</Label>
+          <Label htmlFor="title" className="text-gray-800 dark:text-gray-200">Lecture Title</Label>
           <Input
             id="title"
             placeholder="Enter lecture title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
+            className="dark:bg-gray-800 dark:text-white"
           />
         </div>
 
         <div className="flex flex-col space-y-1">
-          <Label htmlFor="description">Description</Label>
+          <Label htmlFor="description" className="text-gray-800 dark:text-gray-200">Description</Label>
           <Textarea
             id="description"
             placeholder="Describe this lecture..."
@@ -124,11 +124,12 @@ export default function LecturePage() {
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             required
+            className="dark:bg-gray-800 dark:text-white"
           />
         </div>
 
         <div className="flex items-center space-x-3">
-          <Label htmlFor="isFree">Is Free?</Label>
+          <Label htmlFor="isFree" className="text-gray-800 dark:text-gray-200">Is Free?</Label>
           <Switch id="isFree" checked={isFree} onCheckedChange={setIsFree} />
         </div>
 
@@ -143,24 +144,19 @@ export default function LecturePage() {
       {/* Lecture Table */}
       <div className="max-w-6xl mx-auto w-full">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold">Lectures in this Course</h2>
-          {/* <Link href="/createcourse">
-            <Button>Add New Course</Button>
-          </Link> */}
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">Lectures in this Course</h2>
         </div>
 
-        <div className="overflow-x-auto rounded-xl border">
+        <div className="overflow-x-auto rounded-xl border border-gray-200 dark:border-gray-800 bg-white dark:bg-gray-900">
           <Table>
-            <TableCaption className="text-muted-foreground">
+            <TableCaption className="text-gray-600 dark:text-gray-400">
               A list of your created lectures
             </TableCaption>
             <TableHeader>
               <TableRow>
-                <TableHead>Title</TableHead>
-                {/* <TableHead>Description</TableHead> */}
-                <TableHead>Free?</TableHead>
-                {/* <TableHead>Created At</TableHead> */}
-                <TableHead className="text-right">Action</TableHead>
+                <TableHead className="text-gray-800 dark:text-gray-200">Title</TableHead>
+                <TableHead className="text-gray-800 dark:text-gray-200">Free?</TableHead>
+                <TableHead className="text-right text-gray-800 dark:text-gray-200">Action</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -168,18 +164,13 @@ export default function LecturePage() {
                 ? Array.from({ length: 3 }).map((_, i) => (
                     <TableRow key={i}>
                       <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-64" /></TableCell>
                       <TableCell><Skeleton className="h-4 w-16" /></TableCell>
-                      <TableCell><Skeleton className="h-4 w-32" /></TableCell>
-                      <TableCell className="text-right">
-                        <Skeleton className="h-8 w-8 rounded-full" />
-                      </TableCell>
+                      <TableCell className="text-right"><Skeleton className="h-8 w-8 rounded-full" /></TableCell>
                     </TableRow>
                   ))
                 : lectures.map((lecture) => (
-                    <TableRow key={lecture._id}>
-                      <TableCell>{lecture.title}</TableCell>
-                      {/* <TableCell className="max-w-md truncate">{lecture.description}</TableCell> */}
+                    <TableRow key={lecture._id} className="hover:bg-gray-100 dark:hover:bg-gray-800">
+                      <TableCell className="text-gray-900 dark:text-gray-100">{lecture.title}</TableCell>
                       <TableCell>
                         <Badge
                           variant={lecture.isFree ? "default" : "secondary"}
@@ -192,14 +183,14 @@ export default function LecturePage() {
                           {lecture.isFree ? "Yes" : "No"}
                         </Badge>
                       </TableCell>
-                      {/* <TableCell>{new Date(lecture.createdAt).toLocaleString()}</TableCell> */}
                       <TableCell className="text-right">
                         <Button
                           variant="outline"
                           size="icon"
                           onClick={() => router.push(`/editlecture/${lecture._id}`)}
+                          className="dark:border-gray-700 dark:hover:bg-gray-800"
                         >
-                          <Edit className="h-4 w-4" />
+                          <Edit className="h-4 w-4 text-gray-800 dark:text-gray-200" />
                         </Button>
                       </TableCell>
                     </TableRow>

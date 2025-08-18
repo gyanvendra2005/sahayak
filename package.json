@@ -20,5 +20,9 @@
   "workspaces": [
     "apps/*",
     "packages/*"
-  ]
+  ],
+  "dependencies": {
+    "razorpay": "^2.9.6",
+    "react-player": "^3.3.1"
+  }
 }

@@ -74,7 +74,7 @@ const CourseCard = ({course}) => {
         </div>
       </CardContent>
     </Card>
-    </Link>
+  </Link>
   );
 }
 

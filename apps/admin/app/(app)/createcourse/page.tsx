@@ -21,58 +21,54 @@ import { useSession } from "next-auth/react";
 
 export default function AddCourseForm() {
   const router = useRouter();
-  // Initial course data state
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState("");
   const [level, setLevel] = useState("");
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
-  const {data:session} = useSession();
-
-
+  const { data: session } = useSession();
 
   const handleCancel = () => {
-    router.push("/coursetable"); // or wherever you want to go
+    router.push("/coursetable");
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-       try {
-        e.preventDefault(); // Prevent default form submission behavior
-        // const formData = new FormData(e.target as HTMLFormElement);
-        console.log(level, category, title, price, description);
-        const userId = session?.user?.id;
-        if(session?.user.role !== "user") {
-          const response  = axios.post("/api/createcourse", {
-          title: title,
-          description: description,
-          category: category,
-          level: level,
+    try {
+      e.preventDefault();
+      const userId = session?.user?.id;
+
+      if (session?.user.role !== "user") {
+        const response = await axios.post("/api/createcourse", {
+          title,
+          description,
+          category,
+          level,
           coursePrice: price,
           creator: userId,
-          isPublished: false, 
-        })
-        // Handle the response   
-        if((await response).status === 200) {
+          isPublished: false,
+        });
+
+        if (response.status === 200) {
           toast.success("Course created successfully!");
-          router.push("/coursetable"); // Redirect to course table after successful creation
-        }
-        else {
+          router.push("/coursetable");
+        } else {
           toast.error("Failed to create course. Please try again.");
         }
-      }}
-         catch (error) {
-        console.error("Error submitting form:", error);
-        toast.error("Failed to create course. Please try again.");
-        
-       }
-  }
+      }
+    } catch (error) {
+      console.error("Error submitting form:", error);
+      toast.error("Failed to create course. Please try again.");
+    }
+  };
 
   return (
-    <div className="flex-1 mx-6 md:mx-10 my-20">
+    <div className="flex-1 mx-6 md:mx-10 my-20 bg-white dark:bg-gray-900 p-6 md:p-10 rounded-xl shadow-sm">
       {/* Header Section */}
       <div className="mb-6">
-        <h1 className="font-bold text-2xl">Add a New Course</h1>
-        <p className="text-sm text-muted-foreground mt-2">
+        <h1 className="font-bold text-2xl text-gray-900 dark:text-white">
+          Add a New Course
+        </h1>
+        <p className="text-sm text-gray-600 dark:text-gray-400 mt-2">
           Provide basic information about your course to get started.
         </p>
       </div>
@@ -81,31 +77,36 @@ export default function AddCourseForm() {
       <div className="space-y-6 max-w-2xl">
         {/* Course Title */}
         <div className="flex flex-col space-y-1">
-          <Label htmlFor="courseTitle">Title</Label>
+          <Label
+            htmlFor="courseTitle"
+            className="text-gray-800 dark:text-gray-200"
+          >
+            Title
+          </Label>
           <Input
             id="courseTitle"
-            name="courseTitle"
             type="text"
             placeholder="Enter course title"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
+            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
           />
         </div>
 
         {/* Course Category */}
         <div className="flex flex-col space-y-1">
-          <Label htmlFor="category">Category</Label>
-          <Select onValueChange={(e)=>{setCategory(e)}}>
-            <SelectTrigger id="category" className="w-full">
+          <Label className="text-gray-800 dark:text-gray-200">Category</Label>
+          <Select onValueChange={(e) => setCategory(e)}>
+            <SelectTrigger className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
               <SelectValue placeholder="Select a category" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
               <SelectGroup>
                 <SelectLabel>Categories</SelectLabel>
                 <SelectItem value="fullstack">Full-Stack</SelectItem>
                 <SelectItem value="frontend">Frontend</SelectItem>
                 <SelectItem value="backend">Backend</SelectItem>
-                <SelectItem value="backend">Next.js</SelectItem>
+                <SelectItem value="nextjs">Next.js</SelectItem>
                 <SelectItem value="python">Python</SelectItem>
                 <SelectItem value="java">Java</SelectItem>
                 <SelectItem value="data">Data Science</SelectItem>
@@ -118,12 +119,12 @@ export default function AddCourseForm() {
 
         {/* Course Level */}
         <div className="flex flex-col space-y-1">
-          <Label htmlFor="level">Level</Label>
-          <Select onValueChange={(e)=>{setLevel(e)}}>
-            <SelectTrigger id="level" className="w-full">
+          <Label className="text-gray-800 dark:text-gray-200">Level</Label>
+          <Select onValueChange={(e) => setLevel(e)}>
+            <SelectTrigger className="w-full bg-white dark:bg-gray-800 border-gray-300 dark:border-gray-600 text-gray-900 dark:text-white">
               <SelectValue placeholder="Select difficulty level" />
             </SelectTrigger>
-            <SelectContent>
+            <SelectContent className="bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-200">
               <SelectItem value="Beginner">Beginner</SelectItem>
               <SelectItem value="Intermediate">Intermediate</SelectItem>
               <SelectItem value="Advanced">Advanced</SelectItem>
@@ -133,39 +134,49 @@ export default function AddCourseForm() {
 
         {/* Course Price */}
         <div className="flex flex-col space-y-1">
-          <Label htmlFor="price">Price (INR)</Label>
+          <Label className="text-gray-800 dark:text-gray-200">Price (INR)</Label>
           <Input
             id="price"
-            name="price"
             type="number"
             value={price}
             onChange={(e) => setPrice(e.target.value)}
             placeholder="Enter price (e.g., 499)"
+            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
           />
         </div>
 
         {/* Course Description */}
         <div className="flex flex-col space-y-1">
-          <Label htmlFor="description">Description</Label>
+          <Label className="text-gray-800 dark:text-gray-200">Description</Label>
           <Textarea
             id="description"
-            name="description"
             placeholder="Describe what this course is about..."
             rows={5}
             value={description}
             onChange={(e) => setDescription(e.target.value)}
+            className="bg-white dark:bg-gray-800 text-gray-900 dark:text-white border-gray-300 dark:border-gray-600"
           />
         </div>
 
         {/* Buttons */}
         <div className="flex gap-4 pt-4">
-          <Button type="submit" onClick={handleSubmit}>Create Course</Button>
-          <Button variant="outline" type="button" onClick={handleCancel}>
+          <Button
+            type="submit"
+            onClick={handleSubmit}
+            className="bg-blue-600 hover:bg-blue-700 text-white"
+          >
+            Create Course
+          </Button>
+          <Button
+            variant="outline"
+            type="button"
+            onClick={handleCancel}
+            className="border-gray-300 dark:border-gray-600 text-gray-900 dark:text-gray-200"
+          >
             Back
           </Button>
         </div>
       </div>
     </div>
   );
-  }
-
+}
