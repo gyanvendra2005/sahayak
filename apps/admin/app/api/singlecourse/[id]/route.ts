@@ -25,12 +25,13 @@
 
 // app/api/course/[id]/route.ts
 import { CourseModel } from "models/Course";
+import { NextRequest } from "next/server";
 
 export async function GET(
-  // request: Request,
-  context: { params: { id: string } }
+  request: NextRequest,                  // 👈 first arg must be Request/NextRequest
+  context: { params: { id: string } }    // 👈 second arg holds params
 ) {
-  const { id } = context.params;  // ✅ Access from context
+  const { id } = context.params; // ✅ Access from second arg
 
   try {
     const response = await CourseModel.findById(id);
