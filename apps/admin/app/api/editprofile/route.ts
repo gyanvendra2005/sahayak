@@ -12,11 +12,11 @@ export async function PUT(request: Request) {
     const name = dataform.get("name");
     console.log(image);
 
-    if (!image) {
+    if (!image || !(image instanceof File)) {
       return Response.json(
         {
           success: false,
-          message: "No image found",
+          message: "No valid image file found",
         },
         {
           status: 200,
@@ -30,8 +30,8 @@ export async function PUT(request: Request) {
 
     //   if already image is then delte it
     if (image) {
-      if (user.photoUrl) {
-        const publicId = user.photoUrl.split("/").pop().split(".")[0];
+      if (user?.photoUrl) {
+        const publicId = user.photoUrl?.split("/").pop()?.split(".")[0];
         deleteMedia(publicId);
       }
     }
@@ -51,7 +51,7 @@ export async function PUT(request: Request) {
     console.log(photourl);
 
     if (user) {
-      user.name = name;
+      user.name = typeof name === "string" ? name : "";
       user.photoUrl = photourl;
       await user.save();
       return Response.json(
