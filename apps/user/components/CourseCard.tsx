@@ -9,7 +9,22 @@ import { Star } from 'lucide-react';
 import { Button } from './ui/button';
 import Link from 'next/link';
 
-const CourseCard = ({course}) => {
+interface Course {
+  _id: string;
+  title?: string;
+  category: string;
+  coursePrice?: number;
+  creator?: {
+    name?: string;
+    photoUrl?: string;
+  };
+}
+
+interface CourseCardProps {
+  course: Course;
+}
+
+const CourseCard: React.FC<CourseCardProps> = ({ course }) => {
   const { data: session } = useSession();
   const [loading, setLoading] = useState(false);
 

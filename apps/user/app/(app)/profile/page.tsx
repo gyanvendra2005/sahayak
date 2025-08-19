@@ -39,6 +39,11 @@ export default function ProfilePage() {
   title: string;
   description: string;
   coursePrice: number;
+  category: string;
+  creator: {
+    name: string;
+    photoUrl: string;
+  };
 };
   const [course, setCourse] = useState<Course[]>([]);
   const router = useRouter();
