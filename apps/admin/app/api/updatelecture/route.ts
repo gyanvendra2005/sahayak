@@ -26,7 +26,7 @@ export async function PUT(request: Request) {
 
     // Convert buffer to Data URI format for Cloudinary
     const base64Video = buffer.toString("base64");
-    const mimeType = video.type; // ✅ correct
+    const mimeType = video.type; //
     const dataUri = `data:${mimeType};base64,${base64Video}`;
 
     // Upload to Cloudinary

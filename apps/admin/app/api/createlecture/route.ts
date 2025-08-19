@@ -24,7 +24,7 @@ export async function POST(request: Request) {
         success: true,
         message: 'Lecture ceated successfully',
       },
-      { status: 201 });
+      { status: 200 });
 
     } catch (error) {
         console.log(error);

@@ -9,7 +9,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { toast } from "sonner";
 import { Textarea } from "@/components/ui/textarea";
-import Link from "next/link";
+// import Link from "next/link";
 
 const EditLecturePage = () => {
   const { id } = useParams();
@@ -26,8 +26,17 @@ const EditLecturePage = () => {
   useEffect(() => {
     const fetchLectureData = async () => {
       setLoading(true);
+      if (!id) {
+        toast.error("Lecture ID is missing");
+        setLoading(false);
+        return;
+      }
+      console.log(`Fetching lecture data for ID: ${id}`);
+      
       try {
         const { data } = await axios.get(`/api/singlelecture/${id}`);
+        console.log(data);
+        
         if (data) {
           setTitle(data.title);
           setDescription(data.description);
