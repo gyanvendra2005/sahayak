@@ -41,77 +41,59 @@
 
 import mongoose, { Schema, Document, Model } from "mongoose";
 
-export  interface ICourse extends Document {
-  title: string;
-  description: string;
-  category: string;
-  coursePrice: number;
-    password: string; 
-  level: "Beginner" | "Intermediate" | "Advanced";
-  enrolledStudents: mongoose.Types.ObjectId[];
-  lectures: mongoose.Types.ObjectId[];
-  creator: mongoose.Types.ObjectId;
-  isPublished: boolean;
-  createdAt: Date;
-  updatedAt: Date;
+export interface IUser extends Document {
+  name: string;
+  email: string;
+  password: string;
+  role: "student" | "instructor";
+  enrolledCourses: mongoose.Types.ObjectId[]; 
+  photoUrl?: string;
+  timestamp?: Date;
 }
 
-const CourseSchema: Schema<ICourse> = new Schema(
+const UserSchema: Schema<IUser> = new Schema(
   {
-    title: {
+    name: {
       type: String,
       required: true,
       trim: true,
     },
-    description: {
+    email: {
       type: String,
       required: true,
-    },
-    category: {
-      type: String,
-      required: true,
+      unique: true,
+      lowercase: true,
       trim: true,
     },
-    coursePrice: {
-      type: Number,
-      required: true,
-    },
-       password: {
-        type: String,
-        required: true,
-    },
-    level: {
+    password: {
       type: String,
-      enum: ["Beginner", "Intermediate", "Advanced"],
-      default: "Beginner",
-    },
-    enrolledStudents: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "User",
-      },
-    ],
-    lectures: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: "Lecture",
-      },
-    ],
-    creator: {
-      type: Schema.Types.ObjectId,
-      ref: "User",
       required: true,
     },
-    isPublished: {
-      type: Boolean,
-      default: false,
+    role: {
+      type: String,
+      enum: ["student", "instructor"],
+      default: "student",
+    },
+    enrolledCourses: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Course",
+      },
+    ],
+    photoUrl: {
+      type: String,
+      default: "",
+    },
+    timestamp: {
+      type: Date,
+      default: Date.now,
     },
   },
-  { timestamps: true }
+  { timestamps: true } // auto-manages createdAt & updatedAt
 );
 
-// ✅ Prevent recompilation issues in Next.js (important for Vercel)
-const CourseModel: Model<ICourse> =
-  mongoose.models.Course || mongoose.model<ICourse>("Course", CourseSchema);
+// ✅ Prevent model overwrite issues on Vercel / hot reload
+const UserModel: Model<IUser> =
+  mongoose.models.User || mongoose.model<IUser>("User", UserSchema);
 
-export default CourseModel;
+export default UserModel;

@@ -30,20 +30,34 @@ export async function PUT(request: Request) {
 
     //   if already image is then delte it
     if (image) {
-      if (user.photoUrl) {
-        const publicId = user.photoUrl.split("/").pop().split(".")[0];
+      if (user?.photoUrl) {
+        const publicId = user.photoUrl?.split("/")?.pop()?.split(".")[0];
         deleteMedia(publicId);
       }
     }
 
     // Convert image (File/Blob) to Buffer for Cloudinary
-    const arrayBuffer = await image.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
+    let dataUri: string | undefined = undefined;
+    if (image instanceof File) {
+      const arrayBuffer = await image.arrayBuffer();
+      const buffer = Buffer.from(arrayBuffer);
 
-    // Convert buffer to Data URI format for Cloudinary
-    const base64Image = buffer.toString("base64");
-    const mimeType = image.type; // e.g., 'image/png'
-    const dataUri = `data:${mimeType};base64,${base64Image}`;
+      // Convert buffer to Data URI format for Cloudinary
+      const base64Image = buffer.toString("base64");
+      const mimeType = image.type; // e.g., 'image/png'
+      // Convert to Data URI
+      dataUri = `data:${mimeType};base64,${base64Image}`;
+    } else {
+      return Response.json(
+        {
+          success: false,
+          message: "Invalid image file",
+        },
+        {
+          status: 400,
+        }
+      );
+    }
 
     // Upload using Cloudinary
     const uploaded = await uploadMedia(dataUri); // <== accepts data URI
@@ -51,7 +65,7 @@ export async function PUT(request: Request) {
     console.log(photourl);
 
     if (user) {
-      user.name = name;
+      user.name = typeof name === "string" ? name : "";
       user.photoUrl = photourl;
       await user.save();
       return Response.json(
