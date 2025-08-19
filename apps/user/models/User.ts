@@ -41,11 +41,12 @@
 
 import mongoose, { Schema, Document, Model } from "mongoose";
 
-export interface ICourse extends Document {
+export  interface ICourse extends Document {
   title: string;
   description: string;
   category: string;
   coursePrice: number;
+    password: string; 
   level: "Beginner" | "Intermediate" | "Advanced";
   enrolledStudents: mongoose.Types.ObjectId[];
   lectures: mongoose.Types.ObjectId[];
@@ -74,6 +75,10 @@ const CourseSchema: Schema<ICourse> = new Schema(
     coursePrice: {
       type: Number,
       required: true,
+    },
+       password: {
+        type: String,
+        required: true,
     },
     level: {
       type: String,

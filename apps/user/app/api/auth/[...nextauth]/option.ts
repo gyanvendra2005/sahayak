@@ -26,7 +26,7 @@ export const authOptions : NextAuthOptions = {
                         $or:[
                             {email:credentials.email},
                         ]
-                    })
+                    }) 
                     if(!user){
                         throw new Error('No user found with this email')
                     }

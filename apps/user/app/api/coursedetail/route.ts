@@ -45,8 +45,8 @@
 
 import dbconnect from "lib/dbconnect";
 import { NextRequest, NextResponse } from "next/server";
-import { CourseModel } from "../../../../admin/models/Course";
-import { LectureModel } from "../../../../admin/models/Lecture";
+import  CourseModel  from "../../../../admin/models/Course";
+import  LectureModel  from "../../../../admin/models/Lecture";
 import UserModel from "models/User";
 
 export async function GET(request: NextRequest) {
