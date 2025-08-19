@@ -1,5 +1,5 @@
 import dbconnect from "lib/dbconnect";
-import { LectureModel } from "models/Lecture";
+import  LectureModel  from "models/Lecture";
 
 export async function GET(request: Request) {
     await dbconnect();    

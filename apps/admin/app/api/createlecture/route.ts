@@ -1,6 +1,6 @@
 import dbconnect from "lib/dbconnect";
-import { CourseModel } from "models/Course";
-import { LectureModel } from "models/Lecture";
+import  CourseModel  from "models/Course";
+import  LectureModel  from "models/Lecture";
 
 export async function POST(request: Request) {
     dbconnect();
@@ -13,7 +13,7 @@ export async function POST(request: Request) {
             isFree
         });
         const updatecourse = await CourseModel.findByIdAndUpdate({_id: courseId}, { $push: { lectures: response._id } }, { new: true });
-         if(!response.success) {
+         if(!response) {
             return Response.json(
                 {
                     success: false,

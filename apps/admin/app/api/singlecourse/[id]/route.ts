@@ -23,7 +23,7 @@
 // }
 
 
-import { CourseModel } from "models/Course";
+import CourseModel  from "models/Course";
 import { NextRequest } from "next/server";
 
 export async function GET(

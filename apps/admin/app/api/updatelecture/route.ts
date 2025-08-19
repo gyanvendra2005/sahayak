@@ -1,6 +1,6 @@
 import dbconnect from "lib/dbconnect";
 import { uploadMedia } from "../../../utils/cloudnary";
-import { LectureModel } from "models/Lecture";
+import  LectureModel  from "models/Lecture";
 
 export async function PUT(request: Request) {
   await dbconnect();

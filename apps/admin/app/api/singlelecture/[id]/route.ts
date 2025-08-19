@@ -1,4 +1,4 @@
-import { LectureModel } from "models/Lecture";
+import LectureModel  from "models/Lecture";
 
 export async function GET(request: Request,  params: any ) {
   const { id } = params;

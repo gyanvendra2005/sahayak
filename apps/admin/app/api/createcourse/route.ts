@@ -1,5 +1,5 @@
 import dbconnect from "../../../lib/dbconnect";
-import { CourseModel } from "../../../models/Course";
+import  CourseModel  from "../../../models/Course";
 
 
 export async function POST(request: Request) {
@@ -17,7 +17,7 @@ export async function POST(request: Request) {
             isPublished
         })
         const response = await createcourse.save();
-          if(!response.success) {
+          if(!response) {
             return Response.json(
                 {
                     success: false,

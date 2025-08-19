@@ -1,31 +1,81 @@
-import mongoose, { models } from "mongoose";
+// import mongoose, { models } from "mongoose";
 
-const lectureSchema = new mongoose.Schema({
+// const lectureSchema = new mongoose.Schema({
+//     title: {
+//         type: String,
+//         required: true,
+//     },
+//     description: {
+//         type: String,
+//         required: true,
+//     },
+//     videoUrl: {
+//         type: String,
+//     },
+//     publicId:{
+//         type: String,
+//     },
+//     isFree: {
+//         type: Boolean,
+//         default: false,
+//     },
+//     courseId: {
+//         type: mongoose.Schema.Types.ObjectId,
+//         ref: "Course",
+//         required: true,
+//     },
+// }, { timestamps: true });
+
+// // const LectureModel = models.Lecture || mongoose.model("Lecture", lectureSchema);
+// export const LectureModel = mongoose.models.Lecture || mongoose.model("Lecture", lectureSchema);
+// // export default LectureModel;
+
+
+import mongoose, { Schema, Document, Model } from "mongoose";
+
+export interface ILecture extends Document {
+  title: string;
+  description: string;
+  videoUrl?: string;
+  publicId?: string;
+  isFree: boolean;
+  courseId: mongoose.Types.ObjectId;
+  createdAt: Date;
+  updatedAt: Date;
+}
+
+const LectureSchema: Schema<ILecture> = new Schema(
+  {
     title: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
+      trim: true,
     },
     description: {
-        type: String,
-        required: true,
+      type: String,
+      required: true,
     },
     videoUrl: {
-        type: String,
+      type: String,
     },
-    publicId:{
-        type: String,
+    publicId: {
+      type: String,
     },
     isFree: {
-        type: Boolean,
-        default: false,
+      type: Boolean,
+      default: false,
     },
     courseId: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Course",
-        required: true,
+      type: Schema.Types.ObjectId,
+      ref: "Course",
+      required: true,
     },
-}, { timestamps: true });
+  },
+  { timestamps: true }
+);
 
-// const LectureModel = models.Lecture || mongoose.model("Lecture", lectureSchema);
-export const LectureModel = mongoose.models.Lecture || mongoose.model("Lecture", lectureSchema);
-// export default LectureModel;
+// ✅ Prevent model overwrite issues in Next.js
+const LectureModel: Model<ILecture> =
+  mongoose.models.Lecture || mongoose.model<ILecture>("Lecture", LectureSchema);
+
+export default LectureModel;

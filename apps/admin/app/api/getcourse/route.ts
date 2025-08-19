@@ -1,5 +1,5 @@
 import dbconnect from "lib/dbconnect";
-import { CourseModel } from "models/Course";
+import  CourseModel  from "models/Course";
 
 
 
