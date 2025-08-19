@@ -1,7 +1,7 @@
 // app/api/courses/search/route.ts
 import dbconnect from "lib/dbconnect";
 import { NextResponse } from "next/server";
-import { CourseModel } from "../../../../admin/models/Course";
+import CourseModel  from "../../../../admin/models/Course";
 
 
 export async function GET(req: Request) {

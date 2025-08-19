@@ -34,7 +34,13 @@ export default function ProfilePage() {
   // console.log(name, email);
   // console.log(session);
   const [IsLoading, setIsLoading] = useState(false);
-  const [course, setCourse] = useState([]);
+ type Course = {
+  _id: string;
+  title: string;
+  description: string;
+  coursePrice: number;
+};
+  const [course, setCourse] = useState<Course[]>([]);
   const router = useRouter();
   const userId = session?.user.id;
 
@@ -212,7 +218,7 @@ console.log(course);
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
             {course.map((c) => (
               // <Link href={`/course/${c._id}`}>
-                   <CourseCard key={c.id} course={c} />
+                   <CourseCard key={c._id} course={c} />
             ))}
           </div>
         )}
