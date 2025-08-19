@@ -1,6 +1,7 @@
 import dbconnect from "lib/dbconnect";
 import { User } from "lucide-react";
-import  CourseModel  from "../../../../admin/models/Course";
+import CourseModel from "models/Course";
+// import  CourseModel  from "";
 import UserModel from "models/User";
 
 
