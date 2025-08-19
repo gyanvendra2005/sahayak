@@ -32,7 +32,9 @@ export async function PUT(request: Request) {
     if (image) {
       if (user?.photoUrl) {
         const publicId = user.photoUrl?.split("/")?.pop()?.split(".")[0];
-        deleteMedia(publicId);
+        if (publicId) {
+          deleteMedia(publicId);
+        }
       }
     }
 
