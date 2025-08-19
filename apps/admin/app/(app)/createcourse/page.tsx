@@ -48,7 +48,7 @@ export default function AddCourseForm() {
           isPublished: false,
         });
 
-        if (response.status === 200) {
+        if (response.status === 201) {
           toast.success("Course created successfully!");
           router.push("/coursetable");
         } else {
