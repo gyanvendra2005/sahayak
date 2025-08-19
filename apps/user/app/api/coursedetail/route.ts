@@ -47,7 +47,7 @@ import dbconnect from "lib/dbconnect";
 import { NextRequest, NextResponse } from "next/server";
 import  CourseModel  from "../../../../admin/models/Course";
 import  LectureModel  from "../../../../admin/models/Lecture";
-import UserModel from "models/User";
+import UserModel from "../../../../admin/models/User";
 
 export async function GET(request: NextRequest) {
   await dbconnect();
@@ -89,8 +89,8 @@ export async function GET(request: NextRequest) {
     let lectures = course.lectures; 
 
     if (userId) {
-      const user = await UserModel.findById(userId).select("enrolledCourses");
-      if (user && user.enrolledCourses.includes(id)) {
+      const user: any = await UserModel.findById(userId).select("enrolledCourses");
+      if (user && user.enrolledCourses && user.enrolledCourses.includes(id)) {
         isEnrolled = true;
         lectures = course.lectures; // full access if enrolled
       }

@@ -45,7 +45,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   role: "student" | "instructor";
-  enrolledCourses: mongoose.Types.ObjectId[];
+  enrolledCourses: mongoose.Types.ObjectId[]; 
   photoUrl?: string;
   timestamp?: Date;
 }
