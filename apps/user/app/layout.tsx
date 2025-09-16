@@ -7,6 +7,8 @@ import Navbar from "../components/navbar";
 import { Toaster } from "sonner";
 import { ThemeProvider } from "components/theme-provider";
 import Footer from "components/footer";
+import CitizenDashboard from "../components/navbar";
+import Navigate from "components/navigate";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,13 +43,15 @@ export default function RootLayout({
             enableSystem
             disableTransitionOnChange
           >
-          <Navbar/>
+          {/* <Navbar/> */}
+          {/* <CitizenDashboard/>
+          <Navigate/> */}
         {children}
         {/* </div> */}
         <Toaster/>
         </ThemeProvider>
       </body>
-      <Footer/>
+
       </AuthProvider>
     </html>
   );

@@ -1,5 +1,5 @@
 import dbconnect from "../../../lib/dbconnect";
-import UserModel from '../../../models/User';
+import UserModel from '../../../../../packages/models/User';
 import bcrypt from 'bcryptjs';
 
 
@@ -9,10 +9,14 @@ export async function POST(request: Request) {
   await dbconnect();
 
   try {
-    const { name, email, password,role } = await request.json();
+    const formData = await request.formData();
+    const name = formData.get('name') as string;
+    const email = formData.get('email') as string;
+    const password = formData.get('password') as string;
+    const location = formData.get('location') as string;
+    const pincode = formData.get('pincode') as string;
 
     const existingUserByEmail = await UserModel.findOne({ email });
-    // const verifyCode = Math.floor(100000 + Math.random() * 900000).toString();
 
     if (existingUserByEmail) {
         return Response.json(
@@ -29,7 +33,8 @@ export async function POST(request: Request) {
         name,
         email,
         password: hashedPassword,
-        role
+        Location: location,
+        pincode,
       });
 
       await newUser.save();

@@ -2,7 +2,7 @@ import { NextAuthOptions, User } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs"
 import dbconnect from "../../../../lib/dbconnect";
-import  UserModel  from "../../../../models/User";
+import  UserModel  from "../../../../../../packages/models/User";
 
 
 export const authOptions : NextAuthOptions = {
@@ -14,7 +14,8 @@ export const authOptions : NextAuthOptions = {
             id:"credentials",
             credentials: {
                 email: { label: "Email", type: "text" },
-                password: { label: "Password", type: "password" }
+                password: { label: "Password", type: "password" },
+                role: { label: "Role", type: "text" },
               },
               async authorize(credentials){
                 await dbconnect()
@@ -23,8 +24,9 @@ export const authOptions : NextAuthOptions = {
                         throw new Error('Credentials are not provided');
                     }
                     const user = await UserModel.findOne({
-                        $or:[
+                        $and:[
                             {email:credentials.email},
+                            {role:credentials.role}
                         ]
                     }) 
                     if(!user){
@@ -52,12 +54,10 @@ export const authOptions : NextAuthOptions = {
                   
            async jwt({ token, user,trigger,session  }) {
             if(user){
-                token.id = user.id.toString(),
-                token.name = user.name as string,
-                token.email = user.email as string,
-                token.role = user.role as string,
-                token.photoUrl = user.photoUrl as string,
-                token.enrolledCourses = user.enrolledCourses as string[]
+                token.id = user.id.toString();
+                token.name = user.name as string;
+                token.email = user.email as string;
+                token.role = user.role as string;
             }
             if(trigger === 'update'){
                 return { ...token,  ...session?.user }
@@ -66,12 +66,11 @@ export const authOptions : NextAuthOptions = {
           },
           async session({ session, token }) {
             if(token){
-                session.user.id = token.id as string,
-                session.user.name = token.name as string,
-                session.user.email = token.email as string,
-                session.user.role = token.role as string,
-                session.user.photoUrl = token.photoUrl as string,
-                session.user.enrolledCourses = token.enrolledCourses as string[]
+                session.user.id = token.id as string;
+                session.user.name = token.name as string;
+                session.user.email = token.email as string;
+                session.user.role = token.role as string;
+                session.user.location = token.location as string;
             }
             return session
           }

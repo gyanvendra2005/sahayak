@@ -6,18 +6,16 @@ declare module 'next-auth' {
         _id?:string;
         name?:string;
         email?:string;
-        photoUrl?:string;
         role?:string;
-        enrolledCourses?:string[];
+        location?:string
     }
     interface Session{
         user:{
              id?:string;
              name?:string;
              email?:string;
-             photoUrl?:string;
              role?:string;
-             enrolledCourses?:string[];
+             location?:string;
 
         }  & DefaultSession;['user']
 
@@ -29,8 +27,7 @@ declare module 'next-auth/jwt' {
         _id?:string;
         name?:string;
         email?:string;
-        photoUrl?:string;
         role?:string;
-        enrolledCourses?:string[];   
+        location?:string;
     }
 }

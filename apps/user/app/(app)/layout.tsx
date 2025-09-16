@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import AuthProvider from "../context/AuthProvider";
+import ".././globals.css";
+import AuthProvider from "../../context/AuthProvider";
 // import navbar from "./../components/navbar";
-import Navbar from "../components/navbar";
+import Navbar from "../../components/navbar";
 import { Toaster } from "sonner";
-import Sidebar from "../components/sidebar";
 import { ThemeProvider } from "components/theme-provider";
-import AdminDashboard from "../components/navbar";
+import Footer from "components/footer";
+import CitizenDashboard from "../../components/navbar";
 import Navigate from "components/navigate";
 
 const geistSans = Geist({
@@ -44,16 +44,14 @@ export default function RootLayout({
             disableTransitionOnChange
           >
           {/* <Navbar/> */}
-          <AdminDashboard/>
+          <CitizenDashboard/>
           <Navigate/>
-         <div className="flex">
-           {/* <Sidebar/> */}
         {children}
-         </div>
         {/* </div> */}
         <Toaster/>
         </ThemeProvider>
       </body>
+      {/* <Footer/> */}
       </AuthProvider>
     </html>
   );
