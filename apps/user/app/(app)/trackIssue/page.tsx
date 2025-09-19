@@ -1,20 +1,22 @@
 "use client";
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { CheckCircle, Clock, AlertCircle, Search, Phone } from 'lucide-react';
+import { CheckCircle, Clock, AlertCircle, Search, Phone, AlertTriangle } from 'lucide-react';
 import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { toast } from 'sonner';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog'; // Assuming a dialog component available
+import { Textarea } from '@/components/ui/textarea'; 
 
 interface Issue {
   id: string;
   category: string;
   ticketId: string;
   description: string;
-  status: 'sumitted' | 'acknowledged' | 'in-progress' | 'resolved';
+  status: "Submited" | "Acknowledged" | "WorkIsAssigned" | "Resolved";
   createdAt: string;
   updates?: Array<{
     status: string;
@@ -34,14 +36,16 @@ export default function TrackIssue() {
   console.log(userId);
   
   const [issues, setIssues] = React.useState<Issue[]>();
+   const [complaintIssueId, setComplaintIssueId] = useState<string | null>(null);
+  const [complaintMessage, setComplaintMessage] = useState("");
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case 'resolved':
+      case 'Resolved':
         return <CheckCircle className="w-5 h-5 text-green-500" />;
-      case 'in-progress':
+      case 'WorkIsAssigned':
         return <Clock className="w-5 h-5 text-yellow-500" />;
-      case 'acknowledged':
+      case 'Acknowledged':
         return <AlertCircle className="w-5 h-5 text-blue-500" />;
       default:
         return <AlertCircle className="w-5 h-5 text-red-500" />;
@@ -50,9 +54,9 @@ export default function TrackIssue() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'resolved': return 'bg-green-500';
-      case 'in-progress': return 'bg-yellow-500';
-      case 'acknowledged': return 'bg-blue-500';
+      case 'Resolved': return 'bg-green-500';
+      case 'WorkIsAssigned': return 'bg-yellow-500';
+      case 'Acknowledged': return 'bg-blue-500';
       default: return 'bg-red-500';
     }
   };
@@ -60,14 +64,15 @@ export default function TrackIssue() {
   const getStatusText = (status: string) => {
     switch (status) {
       case 'Submited': return 'Submitted';
-      case 'acknowledged': return 'Acknowledged';
-      case 'in-progress': return 'Work Assigned';
-      case 'resolved': return 'Resolved';
+      case 'Acknowledged': return 'Acknowledged';
+      case 'WorkIsAssigned': return 'Work Assigned';
+      case 'Resolved': return 'Resolved';
       default: return status;
     }
   };
 
-  const statusSteps = ['Submited', 'acknowledged', 'in-progress', 'resolved'];
+  const statusSteps = ['Submited', 'Acknowledged', 'WorkIsAssigned', 'Resolved'];
+    const [searchQuery, setSearchQuery] = React.useState("");
 // if(userId){
   useEffect(() => {
     const fectchedIssues = async()=>{
@@ -83,6 +88,41 @@ export default function TrackIssue() {
   fectchedIssues();
 },[userId]);
 // }
+const filteredIssues = React.useMemo(() => {
+    if (!searchQuery) return issues;
+    return issues?.filter(issue => issue.ticketId.toLowerCase().includes(searchQuery.toLowerCase()));
+  }, [issues, searchQuery]);
+
+
+  
+
+  const openComplaintModal = (issueId: string) => {
+    setComplaintIssueId(issueId);
+    setComplaintMessage("");
+  };
+
+  const closeComplaintModal = () => {
+    setComplaintIssueId(null);
+    setComplaintMessage("");
+  };
+
+  const submitComplaint = async () => {
+    if (!complaintMessage.trim()) {
+      toast.error("Please enter complaint details");
+      return;
+    }
+    try {
+      await axios.post('/api/raisecomplaint', {
+        userId,
+        issueId: complaintIssueId,
+        message: complaintMessage,
+      });
+      toast.success("Complaint submitted successfully");
+      closeComplaintModal();
+    } catch {
+      toast.error("Failed to submit complaint");
+    }
+  }
 
   return (
     <div className="max-w-4xl mx-auto p-4 space-y-6">
@@ -92,7 +132,7 @@ export default function TrackIssue() {
         <p className="text-muted-foreground">Monitor the progress of your reported issues</p>
       </div>
 
-      {/* Search */}
+     {/* Search */}
       <Card>
         <CardContent className="p-4">
           <div className="relative">
@@ -100,6 +140,8 @@ export default function TrackIssue() {
             <Input
               placeholder="Search by ticket ID..."
               className="pl-10"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
         </CardContent>
@@ -107,7 +149,7 @@ export default function TrackIssue() {
 
       {/* Issues List */}
       <div className="space-y-4">
-        {issues?.map((issue) => {
+         {filteredIssues?.map((issue) => {
           const currentStepIndex = statusSteps.indexOf(issue.status);
           
           return (
@@ -165,13 +207,22 @@ export default function TrackIssue() {
                   </div>
                 </div>
               </CardContent>
+                 {/* Show Raise Complaint button only if status is Resolved */}
+               {issue.status === "Resolved" && (
+  <div className="mt-4">
+    <Button variant="destructive" className="flex ml-2  items-center gap-2" onClick={() => openComplaintModal(issue.id)}>
+      <AlertTriangle className="w-4 h-4" />
+      Not Satisfied? Raise Complaint
+    </Button>
+  </div>
+)}
             </Card>
           );
         })}
       </div>
 
       {/* Contact Support */}
-      <Card>
+      {/* <Card>
         <CardContent className="p-4 text-center">
           <Phone className="w-8 h-8 mx-auto mb-2 text-blue-500" />
           <h3 className="mb-2">Need Help?</h3>
@@ -183,7 +234,28 @@ export default function TrackIssue() {
             Contact Support
           </Button>
         </CardContent>
-      </Card>
+      </Card> */}
+
+
+         {/* Complaint Modal */}
+      <Dialog open={complaintIssueId !== null} onOpenChange={open => !open && closeComplaintModal()}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Raise Complaint</DialogTitle>
+          </DialogHeader>
+          <Textarea
+            placeholder="Describe your complaint or why you are not satisfied"
+            value={complaintMessage}
+            onChange={(e) => setComplaintMessage(e.target.value)}
+            rows={5}
+          />
+          <DialogFooter>
+            <Button variant="ghost" onClick={closeComplaintModal}>Cancel</Button>
+            <Button onClick={submitComplaint}>Submit</Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
     </div>
   );
 }

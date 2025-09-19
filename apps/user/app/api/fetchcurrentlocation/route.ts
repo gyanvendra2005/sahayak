@@ -10,30 +10,47 @@ export async function GET(req: Request) {
       return NextResponse.json({ error: "Missing lat/lng" }, { status: 400 });
     }
 
-    // Step 1: Get address + pincode
-    const geoRes = await fetch(
-      `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`,
-      { headers: { "User-Agent": "Sahaayak-App/1.0 (contact@example.com)" } }
-    );
+    // Step 1: Get address + pincode from Nominatim
+   const geoRes = await fetch(
+  `https://nominatim.openstreetmap.org/reverse?format=jsonv2&lat=${lat}&lon=${lng}&addressdetails=1`,
+  {
+    headers: {
+      "User-Agent": "Sahaayak-App/1.0 (contact@example.com)",
+    },
+  }
+);
+
+
+    if (!geoRes.ok) {
+      return NextResponse.json({ error: "Nominatim failed" }, { status: geoRes.status });
+    }
+
     const geoData = await geoRes.json();
-    const pincode = geoData.address.postcode;
+    const pincode = geoData.address?.postcode;
 
     if (!pincode) {
       return NextResponse.json({ error: "No pincode found" }, { status: 404 });
     }
 
     // Step 2: Get post office details from India Post
-    const poRes = await fetch(`https://api.postalpincode.in/pincode/${pincode}`);
-    const poData = await poRes.json();
+    // const poRes = await fetch(`https://api.postalpincode.in/pincode/${pincode}`, {
+    //   cache: "no-store",
+    // });
 
-    const postOffices = poData[0]?.PostOffice || [];
+    // if (!poRes.ok) {
+    //   return NextResponse.json({ error: "India Post API failed" }, { status: poRes.status });
+    // }
+
+    // const poData = await poRes.json();
+    // const postOffices = poData[0]?.PostOffice || [];
 
     return NextResponse.json({
+      geoData,
       pincode,
-      postOffices: postOffices[0],
+      // postOffices: postOffices[0] || null,
     });
   } catch (err: any) {
-    console.error("Error fetching Post Office:", err.message);
+    console.error("Error fetching Post Office:", err);
     return NextResponse.json(
       { error: "Failed to fetch Post Office details" },
       { status: 500 }

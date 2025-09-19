@@ -37,15 +37,15 @@ import IssuesMap from "components/map";
 import { useSession } from "next-auth/react";
 
 interface Issue {
-  id: string;
+  _id: string;
   category: string;
   description: string;
-  status: "pending" | "acknowledged" | "in-progress" | "resolved";
+  status: "Submited" | "Acknowledged" | "WorkIsAssigned" | "Resolved";
   priority: "low" | "medium" | "high";
   createdAt: string;
   location: string;
   citizenId: string;
-  promotesCount?: number; 
+  promote?: number; 
     userId: string;  
     ticketId: string;
     photoUrl?: string;
@@ -123,10 +123,10 @@ export default function NearbyIssues({
             const res = await axios.get("/api/fetchcurrentlocation", {
               params: location,
             });
-            setLocation(res.data.postOffices?.Name || "");
+            setLocation(res.data.geoData.display_name.split(',')[0] || "");
             console.log(
               "✅ Current Location Data:",
-              res.data.postOffices?.Name
+              res.data.geoData.display_name.split(',')[0]
             );
 
             // if (res.data) {
@@ -167,15 +167,9 @@ export default function NearbyIssues({
 
         const enhancedIssues = fetchedIssues.map((issue: Issue) => ({
           ...issue,
-          engagements: {
-            likes: Math.floor(Math.random() * 25) + 1,
-            shares: Math.floor(Math.random() * 15) + 1,
-            comments: Math.floor(Math.random() * 10) + 1,
-            userLiked: Math.random() > 0.7,
-            userShared: Math.random() > 0.8,
-          },
-          distance: Math.random() * 5 + 0.1,
         }));
+        console.log("Enhanced Issues:", enhancedIssues);
+        
         setIssuesWithEngagement(enhancedIssues);
         setLoading(false);
       } catch (err) {
@@ -185,40 +179,17 @@ export default function NearbyIssues({
     if (location) fetchissue();
   }, [location]);
 
-  const handleEngagement = (
-    issueId: string,
-    type: "promote" | "share" | "comment"
-  ) => {
-    setIssuesWithEngagement((prev) =>
-      prev.map((issue) => {
-        if (issue.id === issueId && issue.engagements) {
-          const updatedEngagements = { ...issue.engagements };
-
-          if (type === "promote") {
-            if (updatedEngagements.userLiked) {
-              updatedEngagements.promote -= 1;
-              updatedEngagements.userLiked = false;
-            } else {
-              updatedEngagements.promote += 1;
-              updatedEngagements.userLiked = true;
-            }
-          } else if (type === "share") {
-            if (!updatedEngagements.userShared) {
-              updatedEngagements.shares += 1;
-              updatedEngagements.userShared = true;
-            }
-          } else if (type === "comment") {
-            updatedEngagements.comments += 1;
-          }
-
-          return { ...issue, engagements: updatedEngagements };
+  const handleEngagement = async (postId:string) => {
+      try {
+       const res = await axios.post("/api/promote", { postId });
+        console.log("Engagement Response:", res.data);
+        if (res.data.success) {
+          // Update local state to reflect engagemen
         }
-        return issue;
-      })
-    );
-
-    onEngagement(issueId, type);
-  };
+      } catch (error) {
+        
+      }
+  }
 
   const getStatusColor = (status: string) => {
     switch (status) {
@@ -518,7 +489,7 @@ export default function NearbyIssues({
 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
   {filteredIssues.map((issue) => (
     <Card
-      key={issue.id}
+      key={issue._id}
       className="hover:shadow-lg transition-all rounded-xl overflow-hidden"
     >
       {/* 🔹 Image Section */}
@@ -572,16 +543,16 @@ export default function NearbyIssues({
         </div>
 
         <div className="flex items-center text-xs text-gray-500 gap-2 mt-1">
-          🚀 {issue.promotesCount === 1
+          🚀 {issue.promote === 1
             ? "1 person promoted"
-            : `${issue.promotesCount || 0} people promoted`}
+            : `${issue.promote || 0} people promoted`}
         </div>
 
         <Button
           variant="outline"
           size="sm"
           className="mt-4 w-full flex items-center justify-center gap-2"
-          onClick={() => handleEngagement(issue.id, "promote")}
+          onClick={() => handleEngagement(issue._id)}
         >
           🚀 Promote
         </Button>

@@ -69,17 +69,22 @@ export default function CitizenHome() {
               params: location,
             });
               console.log(res.data.postOffices?.Name);
+              console.log(res.data.geoData);
+              // const display_name = res.data.geoData.display_name.split[','];
+              // const city = display_name[0];
+              // console.log(city);
+              
               
             if (res.data) {
               setFormData((prev) => ({
                 ...prev,
-                location: res.data.postOffices?.Name || '',
-                pincode: res.data.pincode || '',
+                location: res.data.geoData.display_name.split(',')[0] || '',
+                pincode: res.data.geoData.postcode || '',
               }));
             }
 
-            console.log('📍 Pincode:', res.data.pincode);
-            console.log('🏢 Post Office:', res.data.postOffices?.Name);
+            console.log('📍 Pincode:', res.data.geoData.display_name.split(',')[3]);
+            console.log('🏢 Post Office:', res.data.geoData.display_name.split(',')[0]);
           } catch (err) {
             console.error('❌ Error sending location', err);
           }
@@ -104,45 +109,69 @@ export default function CitizenHome() {
     
   };
 
-  // 🔹 Submit Handler
   const handleSubmit = async () => {
-    if (!formData.description || !formData.category) return;
+  if (!formData.description || !formData.category || !formData.image) return;
 
-    setIsSubmitting(true);
+  setIsSubmitting(true);
+  console.log("hi");
+  
 
-    try {
-      const generatedTicketId = `CIV${Date.now().toString().slice(-6)}`;
-      setTicketId(generatedTicketId);
+  try {
+    // ⬇️ 1. Send the image to your FastAPI /predict endpoint first
+    const predData = new FormData();
+    predData.append('file', formData.image);
 
-      const data = new FormData();
-      data.append('userId', userId);
-      data.append('ticketId', generatedTicketId);
-      data.append('title', formData.title);
-      data.append('description', formData.description);
-      data.append('category', formData.category);
-      data.append('location', formData.location);
-      data.append('pincode', formData.pincode);
-      if (formData.image) data.append('image', formData.image);
-      if(formData.category === 'potholes'||'streetlight'||'waterissue'){
-        data.append('department','Engineering');
-      }
-      if(formData.category === 'garbage'){
-        data.append('department','Health');
-      }
-      if(formData.category === 'other'){
-        data.append('department','Firework');
-      }
+    // ⚠️ Use your real FastAPI URL here:
+    // If running locally: http://127.0.0.1:8000/predict
+    const predRes = await axios.post('http://127.0.0.1:8000/predict', predData);
 
-      await axios.post('/api/uploadpost', data);
+    console.log('Prediction:', predRes.data);
 
-      setShowSuccess(true);
+    // ⬇️ 2. Check predicted_class
+    if (predRes.data.predicted_class === 'fake') {
+      alert('⚠️ This image seems to be fake. Report not submitted.');
       setIsSubmitting(false);
-
-    } catch (err) {
-      console.error('❌ Submit error', err);
-      setIsSubmitting(false);
+      return;
     }
-  };
+
+    // ⬇️ 3. Continue submitting to your own API if not fake
+    const generatedTicketId = `CIV${Date.now().toString().slice(-6)}`;
+    setTicketId(generatedTicketId);
+
+    const data = new FormData();
+    data.append('userId', userId);
+    data.append('ticketId', generatedTicketId);
+    data.append('title', formData.title);
+    data.append('description', formData.description);
+    data.append('category', formData.category);
+    data.append('location', formData.location);
+    data.append('pincode', formData.pincode);
+    if (formData.image) data.append('image', formData.image);
+
+    // department selection
+    if (
+      formData.category === 'potholes' ||
+      formData.category === 'streetlight' ||
+      formData.category === 'waterissue'
+    ) {
+      data.append('department', 'Engineering');
+    }
+    if (formData.category === 'garbage') {
+      data.append('department', 'Health');
+    }
+    if (formData.category === 'other') {
+      data.append('department', 'Firework');
+    }
+
+    await axios.post('/api/uploadpost', data);
+
+    setShowSuccess(true);
+    setIsSubmitting(false);
+  } catch (err) {
+    console.error('❌ Submit error', err);
+    setIsSubmitting(false);
+  }
+};
 
 // 🔹 Success Screen
 if (ticketId && showSuccess) {

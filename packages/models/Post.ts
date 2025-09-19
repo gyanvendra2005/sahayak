@@ -6,6 +6,7 @@ export interface IPost extends Document {
   location?: string;
   category?: string;
   department?: "Health"|"Engineering"|"Firework";
+  promote?: number;
   photoUrl?: string;
   ticketId?: string;
   status?: "Submited" | "Acknowledged" | "WorkIsAssigned" | "Resolved";
@@ -31,6 +32,10 @@ const PostSchema: Schema<IPost> = new Schema(
       type: String,
       enum: ["Health","Engineering","Firework"],
       required: true,
+    },
+    promote: {
+      type: Number,
+      default: 1,
     },
     category: {
       type: String,
