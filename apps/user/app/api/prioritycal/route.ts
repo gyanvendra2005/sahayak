@@ -9,4 +9,5 @@ cron.schedule('*/30 * * * * *', async () => {
 });
 
 console.log('Cron job started...');
+"checking"
 
