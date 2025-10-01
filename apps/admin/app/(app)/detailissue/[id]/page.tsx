@@ -287,7 +287,7 @@ export default function IssueDetailsPage() {
                 <label className="text-sm font-medium mb-2 block">
                   Issue Status
                 </label>
-                <Select value={newStatus} onValueChange={setNewStatus}>
+                <Select value={newStatus} onValueChange={value => setNewStatus(value as Issue["status"])}>
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
