@@ -77,8 +77,8 @@ export default function Signup({ onSignup, onSwitchToLogin }: SignupProps) {
             if(res.data) {
               setFormData((prev) => ({
                 ...prev,
-                location: res.data.postOffices["Name"],
-                pincode: res.data.pincode
+                location:  res.data.geoData.display_name.split(',')[0],
+                pincode:  res.data.geoData.postcode || "", 
               }));
             }
             console.log(res.data.pincode);

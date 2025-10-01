@@ -157,7 +157,7 @@ import React, { useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import { Home, MapPin, Search, Bell, LogOut, User, Shield } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 
 export default function CitizenDashboard() {
   const { data: session } = useSession();
@@ -179,36 +179,36 @@ export default function CitizenDashboard() {
             
             <div className="flex items-center gap-3">
               <div className="flex items-center gap-2 px-3 py-1 bg-gray-50 rounded-lg">
-                {user?.role === 'citizen' ? (
+                {user?.role === 'User' ? (
                   <User className="w-4 h-4 text-blue-500" />
-                ) : user?.role === 'superadmin' ? (
+                ) : user?.role === 'SuperAdmin' ? (
                   <Shield className="w-4 h-4 text-red-500" />
                 ) : (
                   <Shield className="w-4 h-4 text-orange-500" />
                 )}
-                <span className="text-sm font-medium">{user?.name}</span>
+                <span className="text-sm font-medium">{user?.role=="User"? user?.name : user?.department}</span>
                 <Badge 
                   variant="secondary" 
                   className={`text-xs ${
                     user?.role === 'SuperAdmin' 
                       ? 'bg-red-100 text-red-700' 
-                      : user?.role === 'subadmin'
+                      : user?.role === 'SubAdmin'
                       ? 'bg-orange-100 text-orange-700'
                       : ''
                   }`}
                 >
                   {user?.role === 'SuperAdmin' 
-                    ? 'Super Admin' 
-                    : user?.role === 'subadmin' 
-                    ? 'Sub Admin' 
+                    ? "Department"
+                    : user?.role === 'SubAdmin' 
+                    ? 'Department' 
                     : 'Citizen'}
                 </Badge>
               </div>
-              
-              <Button variant="outline" size="sm" onClick={handleLogout}>
-                <LogOut className="w-4 h-4 mr-2" />
-                Logout
-              </Button>
+
+              <Button variant="outline" onClick={() => signOut()}>
+                 <LogOut className="w-4 h-4 mr-2" />
+            Log Out
+          </Button>
             </div>
           </div>
         </div>

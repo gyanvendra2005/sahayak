@@ -144,7 +144,7 @@ export default function UserManagement() {
       data.append("location", formData.location);
 
 
-      const newUser = await axios.post("/api/auth/signup", data);
+      const newUser = await axios.post("/api/signup", data);
       if (newUser.status === 201) {
         toast.success("Sub Admin account created successfully!");
         // setUsers((prev) => [newUser.data.user, ...(prev ?? [])]);
@@ -210,9 +210,9 @@ export default function UserManagement() {
     const safeType = type?.toLowerCase() || "user"; // ✅ fallback
     switch (safeType) {
       case "superadmin":
-        return <Badge className="bg-red-100 text-red-700">Super Admin</Badge>;
+        return <Badge className="bg-red-100 text-red-700">Department</Badge>;
       case "subadmin":
-        return <Badge className="bg-orange-100 text-orange-700">Sub Admin</Badge>;
+        return <Badge className="bg-orange-100 text-orange-700">Supervisor</Badge>;
       default:
         return <Badge variant="secondary">Citizen</Badge>;
     }
@@ -302,7 +302,7 @@ export default function UserManagement() {
                   <SelectValue placeholder="Department" />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="potholes">Engineering</SelectItem>
+                  <SelectItem value="Engineering">Engineering</SelectItem>
                   <SelectItem value="streetlight">Street Light</SelectItem>
                   <SelectItem value="garbage">Garbage</SelectItem>
                   <SelectItem value="water">Water Issues</SelectItem>
@@ -428,7 +428,7 @@ export default function UserManagement() {
           <CardContent className="p-4">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Sub Admins</p>
+                <p className="text-sm text-muted-foreground">Supervisor</p>
                 <p className="text-2xl font-bold">{stats.subAdmins}</p>
               </div>
               <Shield className="w-8 h-8 text-orange-500" />

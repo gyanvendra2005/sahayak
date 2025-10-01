@@ -1,31 +1,35 @@
+// /app/api/fetchnofication/route.ts
+import { NextRequest, NextResponse } from "next/server";
+import axios from "axios";
 
+export async function GET(req: NextRequest) {
+  try {
+    // Extract userId from query parameters
+    const url = new URL(req.url);
+    const userId = url.searchParams.get("userId");
 
+    if (!userId) {
+      return NextResponse.json({ error: "Missing userId" }, { status: 400 });
+    }
 
-// import { Notification } from "";
-// import dbConnect from "@/lib/dbConnect";
-import Notification from "../../../../../packages/models/Notification";
+    // Call your Express server to get notifications from MongoDB
+    const response = await axios.get(`http://localhost:4000/notifications/${userId}`);
+    const notifications = response.data;
 
-import dbconnect from "lib/dbconnect";
+    // Map the data to match your frontend Notification interface
+    const formatted = notifications.map((n: any) => ({
+      id: n._id,
+      type: n.type,
+      title: n.title,
+      message: n.message,
+      timestamp: n.createdAt,
+      read: false, // or n.read if you store read status in DB
+      issueId: n.issueId,
+    }));
 
-export async function GET(req: Request) {
-    await dbconnect();
-  const { searchParams } = new URL(req.url);
-  const userId = searchParams.get("userId");
-
-  const notifications = await Notification.find({userId})
-  return Response.json({ notifications });
-}
-
-// POST - create new notification
-export async function POST(req: Request) {
-  const body = await req.json();
-  const notif = await Notification.create(body);
-  return Response.json({ notification: notif });
-}
-
-// PATCH - mark as read
-export async function PATCH(req: Request) {
-  const { id } = await req.json();
-  await Notification.findByIdAndUpdate(id, { read: true });
-  return Response.json({ success: true });
+    return NextResponse.json(formatted);
+  } catch (err) {
+    console.error("Error fetching notifications:", err);
+    return NextResponse.json({ error: "Failed to fetch notifications" }, { status: 500 });
+  }
 }

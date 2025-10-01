@@ -4,7 +4,6 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import { Badge } from '@/components/ui/badge';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Eye, EyeOff, Shield, User, Mail, Lock, AlertCircle, CheckCircle } from 'lucide-react';
@@ -80,7 +79,7 @@ export default function Login({ onLogin, }: LoginProps) {
         router.replace('/');
     }
     else {
-        router.replace('/3001');
+        router.replace('/');
     }}
     setIsLoading(false);
 
@@ -119,7 +118,7 @@ export default function Login({ onLogin, }: LoginProps) {
         <CardContent className="space-y-4">
           {/* User Type Selection */}
           <div className="grid grid-cols-3 gap-2">
-            <Button
+            {/* <Button
               type="button"
               variant={userType === 'User' ? 'default' : 'outline'}
               onClick={() => setUserType('User')}
@@ -127,8 +126,8 @@ export default function Login({ onLogin, }: LoginProps) {
             >
               <User className="w-4 h-4" />
               Citizen
-            </Button>
-            {/* <Button
+            </Button> */}
+            <Button
               type="button"
               variant={userType === 'SubAdmin' ? 'default' : 'outline'}
               onClick={() => setUserType('SubAdmin')}
@@ -145,8 +144,8 @@ export default function Login({ onLogin, }: LoginProps) {
             >
               <Shield className="w-4 h-4" />
               Super Admin
-            </Button> */}
-          </div> 
+            </Button>
+          </div>
 
           {/* Login Form */}
           <form onSubmit={handleSubmit} className="space-y-4">

@@ -29,19 +29,25 @@ import {
   UserCheck,
   ArrowLeft,
 } from "lucide-react";
+import { toast } from "sonner";
 // import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 
 interface Issue {
   _id: string;
   category: string;
   description: string;
-  status: "pending" | "acknowledged" | "in-progress" | "resolved";
+  status: "pending" | "Acknowledged" | "in-progress" | "resolved";
   priority: "low" | "medium" | "high";
   timestamp: string;
   location: string;
   citizenId: string;
+  userId: string;
   assignedWorker?: string;
   image?: string;
+  department: string;
+  photoUrl?: string;
+  ticketId: string;
+  createdAt: string;
 }
 
 interface Worker {
@@ -78,26 +84,57 @@ export default function IssueDetailsPage() {
       }
     };
 
-    const fetchWorkers = async () => {
-      try {
-        const res = await axios.get("/api/workers");
-        setWorkers(res.data.workers || []);
-      } catch (err) {
-        console.error("Error fetching workers:", err);
-      }
-    };
+   const fetchWorkers = async () => {
+  try {
+    const res = await axios.get("/api/workers", {
+      params: { department: issue?.department },
+    });
+
+    // adapt backend shape to your interface
+    const formattedWorkers = (res.data.res || []).map((w: any) => ({
+      id: w._id,
+      name: w.name,
+      department: w.department,
+      location: w.Location || "Kanpur", // default location
+      activeIssues: w.activeIssues || 0,
+      rating: w.rating || 0,
+    }));
+
+    setWorkers(formattedWorkers);
+  } catch (err) {
+    console.error("Error fetching workers:", err);
+  }
+};
+
 
     if (id) {
       fetchIssueDetails();
       fetchWorkers();
     }
-  }, [id]);
+  }, [id, issue?.department]);
+
+  // change status
+   const handleUpdate = async () => {
+  try {
+    const res = await axios.put("/api/updateStatus", { id, status: newStatus,userId:issue?.userId,ticketId:issue?.ticketId});
+
+    if (res.status === 200) {
+      toast.success("Issue updated successfully!");
+    } else {
+      toast.error("Error updating issue");
+    }
+  } catch (err) {
+    console.error(err);
+    toast.error("Error updating issue");
+  }
+};
+
 
   const getStatusColor = (status: string) => {
     switch (status) {
       case "resolved":
         return "text-green-600 bg-green-50";
-      case "in-progress":
+      case "Acknowledged":
         return "text-yellow-600 bg-yellow-50";
       case "acknowledged":
         return "text-blue-600 bg-blue-50";
@@ -129,28 +166,27 @@ export default function IssueDetailsPage() {
     return imageMap[category] || imageMap["potholes"];
   };
 
-  const handleUpdate = async () => {
-    if (!issue) return;
-    try {
-      await axios.put(`/api/issues/${issue._id}`, {
-        status: newStatus,
-        assignedWorker: selectedWorker || undefined,
-      });
-      alert("Issue updated successfully!");
-    } catch (err) {
-      console.error("Error updating issue:", err);
-    }
-  };
+  // const handleUpdate = async () => {
+  //   if (!issue) return;
+  //   try {
+  //     await axios.put(`/api/issues/${issue._id}`, {
+  //       status: newStatus,
+  //       assignedWorker: selectedWorker || undefined,
+  //     });
+  //     alert("Issue updated successfully!");
+  //   } catch (err) {
+  //     console.error("Error updating issue:", err);
+  //   }
+  // };
+
+ 
+  
 
   if (loading) return <p className="p-6">Loading issue...</p>;
   if (!issue) return <p className="p-6 text-red-500">Issue not found.</p>;
 
   // Filter relevant workers
-  const relevantWorkers = workers.filter(
-    (worker) =>
-      worker.department.toLowerCase().includes(issue.category.toLowerCase()) ||
-      worker.department === "General Maintenance"
-  );
+  const relevantWorkers = workers;
 
   return (
     <div className="max-w-5xl mx-auto p-6 space-y-6">
@@ -268,14 +304,14 @@ export default function IssueDetailsPage() {
 
               <div>
                 <label className="text-sm font-medium mb-2 block">
-                  Assign Department
+                  Assign Supervisor
                 </label>
                 <Select
                   value={selectedWorker}
                   onValueChange={setSelectedWorker}
                 >
                   <SelectTrigger>
-                    <SelectValue placeholder="Select a Department" />
+                    <SelectValue placeholder="Select a Supervisor" />
                   </SelectTrigger>
                   <SelectContent>
                     {relevantWorkers.map((worker) => (

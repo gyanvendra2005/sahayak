@@ -4,12 +4,15 @@ export async function GET(request:Request) {
        await dbconnect();
        const searchParams = new URL(request.url);
        const id = searchParams.searchParams.get('id');
+       const department = searchParams.searchParams.get('department');
+       console.log("fetching ",department,id);
+       
               try {
                 if(id){
             const data = await PostModel.findById(id);
             return Response.json({data},{status:200});
                 }
-        const data = await PostModel.find();
+        const data = await PostModel.find(department?{department}:{}).sort({createdAt:-1});
         console.log(data);
         
         return Response.json({data},{status:200});
