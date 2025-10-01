@@ -140,7 +140,7 @@ export default function Page() {
                 </div>
               </div>
             </CardHeader>
-            <CardContent className="p-4">
+            {/* <CardContent className="p-4">
               {loading ? (
                 <p className="text-gray-500">Loading issues...</p>
               ) : (
@@ -173,7 +173,7 @@ export default function Page() {
                   ]}
                 />
               )}
-            </CardContent>
+            </CardContent> */}
           </Card>
         </div>
 
