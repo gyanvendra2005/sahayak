@@ -7,9 +7,15 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Input } from '@/components/ui/input';
 import { Filter, Search, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 import axios from 'axios';
-import IssuesMap from 'components/map';
+// import IssuesMap from 'components/map';
 import Link from 'next/link';
 import { useSession } from 'next-auth/react';
+import dynamic from "next/dynamic";
+
+// lazy-load map (no SSR)
+const IssuesMap = dynamic(() => import("components/map"), {
+  ssr: false,
+});
 
 interface Issue {
   _id: string;
@@ -140,7 +146,7 @@ export default function Page() {
                 </div>
               </div>
             </CardHeader>
-            {/* <CardContent className="p-4">
+            <CardContent className="p-4">
               {loading ? (
                 <p className="text-gray-500">Loading issues...</p>
               ) : (
@@ -173,7 +179,7 @@ export default function Page() {
                   ]}
                 />
               )}
-            </CardContent> */}
+            </CardContent>
           </Card>
         </div>
 
