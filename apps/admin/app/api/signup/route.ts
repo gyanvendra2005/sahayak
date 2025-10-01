@@ -13,6 +13,9 @@ export async function POST(request: Request) {
     const department = formdata.get("department");
     const location = formdata.get("location");
  
+     if (typeof password !== "string") {
+       return Response.json({ message: "Invalid password" }, { status: 400 });
+     }
      const hashedPassword = await bcrypt.hash(password, 10);
 
 
